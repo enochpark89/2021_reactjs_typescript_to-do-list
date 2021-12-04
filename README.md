@@ -388,3 +388,122 @@ function ToDoList() {
 
 export default ToDoList;
 ```
+
+# 5.14 - Inmutability
+
+- ReactJS makes you good at JavaScript also. 
+- JavaScript - functional programming way. 
+- If we want to modify the objects of data. 
+
+1. Find current target of data. 
+```js
+
+// return the same ToDos data.
+setToDos(oldToDos => {
+  const targetIndex = oldToDos.findIndex((todo) => toDo.id === console.log(targetIndex))
+  return oldToDos;
+})
+```
+
+2. Replace the data in it. 
+
+- We start out by replacing the category field of ToDo data.
+
+# 5.16 - Selector
+
+- A selector represent a piece of modified state.
+- Ex: atom - toDoState - we are putting all the toDos. 
+- selector can take the toDoState and transform into another state.
+
+```js
+export const toDoSelector = selector({
+  key: "toDoSelector",
+  // whatever you return from here will be the toDo.
+  get: ({ get }) => {
+    const toDos = get(toDoState);
+    // Output of three seperate arrays depending on a category.
+    return [
+      toDos.filter((toDo) => toDo.category === "TO_DO"),
+      toDos.filter((toDo) => toDo.category === "DOING"),
+      toDos.filter((toDo) => toDo.category === "DONE"),
+    ];
+  },
+});
+```
+
+Steps:
+
+1. Selector gets created in atom
+```js
+import { atom, selector } from "recoil";
+
+export interface IToDo {
+  text: string;
+  id: number;
+  category: "TO_DO" | "DOING" | "DONE";
+}
+export const toDoState = atom<IToDo[]>({
+  key: "toDo",
+  default: [],
+});
+
+// selector besically gets the toDoState and filter them into three arrays based on a category.
+export const toDoSelector = selector({
+  key: "toDoSelector",
+  get: ({ get }) => {
+    const toDos = get(toDoState);
+    return [
+      toDos.filter((toDo) => toDo.category === "TO_DO"),
+      toDos.filter((toDo) => toDo.category === "DOING"),
+      toDos.filter((toDo) => toDo.category === "DONE"),
+    ];
+  },
+});
+```
+
+2. Display what is in the toDoSelector
+
+```js
+import { useRecoilValue } from "recoil";
+import { toDoSelector, toDoState } from "../atoms";
+import CreateToDo from "./CreateToDo";
+import ToDo from "./ToDo";
+
+function ToDoList() {
+  const [toDo, doing, done] = useRecoilValue(toDoSelector);
+  return (
+    <div>
+      <h1>To Dos</h1>
+      <hr />
+      <CreateToDo />
+      <h2>To Do</h2>
+      <ul>
+        {toDo.map((toDo) => (
+          <ToDo key={toDo.id} {...toDo} />
+        ))}
+      </ul>
+      <hr />
+      <h2>Doing</h2>
+      <ul>
+        {doing.map((toDo) => (
+          <ToDo key={toDo.id} {...toDo} />
+        ))}
+      </ul>
+      <hr />
+      <h2>Done</h2>
+      <ul>
+        {done.map((toDo) => (
+          <ToDo key={toDo.id} {...toDo} />
+        ))}
+      </ul>
+      <hr />
+    </div>
+  );
+}
+export default ToDoList;
+```
+
+
+- so basically to explain in a nutshell. 
+
+CreateToDo list > submitted form into an array > ToDobuttons arrange items into a category > Selector in atom will organize items into three arrays based on a category > ToDoList will display what is in the toDoSelector 
