@@ -507,3 +507,7 @@ export default ToDoList;
 - so basically to explain in a nutshell. 
 
 CreateToDo list > submitted form into an array > ToDobuttons arrange items into a category > Selector in atom will organize items into three arrays based on a category > ToDoList will display what is in the toDoSelector 
+
+# 5.17 
+
+- 
